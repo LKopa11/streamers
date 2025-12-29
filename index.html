@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ستريمرز ريسبكت</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-
 <style>
 :root{
   --p:#9d4edd; --g:#2cff7b;
@@ -34,21 +33,98 @@ header h1{margin-top:15px;text-shadow:0 0 20px var(--p)}
 .cat-option:hover{background:rgba(255,255,255,.1)}
 
 .streamers{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:25px;padding:0 25px 60px}
-.card{background:linear-gradient(160deg,var(--bg1),var(--bg2));border-radius:25px;padding:20px;text-align:center}
+.card{background:linear-gradient(160deg,var(--bg1),var(--bg2));border-radius:25px;padding:20px;text-align:center;transition: transform 0.3s;position:relative}
 
-.avatar{width:85px;height:85px;border-radius:50%;border:3px solid var(--p);margin:0 auto 10px}
-.category{padding:6px 14px;border-radius:12px;background:linear-gradient(135deg,#9d4edd,#2cff7b);font-weight:bold;display:inline-block}
+.avatar{
+  width:85px;height:85px;border-radius:50%;
+  border:3px solid var(--p);
+  background:rgba(255,255,255,.08);
+  margin:0 auto 10px;
+}
+
+.category{
+  display:inline-block;
+  padding:6px 14px;
+  border-radius:12px;
+  background:linear-gradient(135deg,#9d4edd,#2cff7b);
+  font-weight:bold;
+  margin-top:8px;
+}
+
+.info{margin-top:10px;color:#ccc}
+.live-status{display:flex;justify-content:center;gap:8px;align-items:center;margin-top:10px}
+.dot{
+  width:14px;
+  height:14px;
+  border-radius:50%;
+}
+.dot.live{
+  background:#2cff7b;
+  box-shadow:0 0 10px #2cff7b;
+  animation: pulse 1.5s infinite;
+}
+.dot.off{
+  background:#ff4b4b;
+  box-shadow:0 0 10px #ff4b4b;
+  animation: pulse 1.5s infinite;
+}
+@keyframes pulse{
+  0% { transform: scale(1); box-shadow:0 0 10px currentColor; }
+  50% { transform: scale(1.4); box-shadow:0 0 20px currentColor; }
+  100% { transform: scale(1); box-shadow:0 0 10px currentColor; }
+}
 
 .btn{display:inline-block;margin-top:15px;padding:12px 25px;border-radius:50px;background:linear-gradient(135deg,var(--p),var(--g));color:#fff;text-decoration:none}
 
-.admin-panel{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#000;padding:20px;border-radius:15px;width:350px;display:none;z-index:999}
-.admin-panel input,.admin-panel button{width:100%;padding:10px;margin-bottom:10px;border-radius:10px;border:none}
-.admin-panel button{background:var(--p);color:#fff}
+.admin-panel{
+  position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
+  background:#000;padding:20px;border-radius:15px;width:350px;
+  display:none;z-index:999;
+}
+.admin-panel input,.admin-panel button{
+  width:100%;padding:10px;margin-bottom:10px;border-radius:10px;border:none;font-weight:bold;
+}
+.admin-panel button{background:var(--p);color:#fff;cursor:pointer;}
 
-#passwordPanel{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#000;padding:20px;border-radius:15px;width:300px;z-index:1000;text-align:center}
-#passwordPanel input,#passwordPanel button{width:100%;padding:10px;margin-bottom:10px;border-radius:10px;border:none}
+#toast{
+  position:fixed;bottom:25px;right:25px;background:linear-gradient(135deg,var(--p),var(--g));
+  color:#000;padding:12px 20px;border-radius:15px;font-weight:bold;opacity:0;transition:.4s;
+}
+#toast.show{opacity:1}
+
+#passwordPanel{
+  display:none;
+  position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
+  background:#000;padding:20px;border-radius:15px;width:300px;z-index:1000;text-align:center;
+}
+#passwordPanel input{
+  width:100%;padding:10px;margin-bottom:10px;border-radius:10px;border:none;font-weight:bold;
+}
+#passwordPanel button{
+  width:100%;padding:10px;border-radius:10px;border:none;background:var(--p);color:#fff;font-weight:bold;cursor:pointer;
+}
 
 @keyframes float{50%{transform:translateY(-10px)}}
+
+/* --------- Responsive ---------- */
+@media (max-width: 600px){
+  header img { width: 70px; }
+  header h1 { font-size: 1.5em; }
+  .stat { padding: 15px 20px; min-width: 140px; }
+  .btn { padding: 10px 20px; font-size: 0.9em; }
+  .custom-select { width: 90%; }
+}
+
+@media (max-width: 400px){
+  .streamers { padding: 0 10px 50px; gap: 15px; }
+  .card { padding: 15px; }
+  .avatar { width: 70px; height: 70px; }
+}
+
+@media (max-width: 500px){
+  .admin-panel, #passwordPanel { width: 90%; }
+  #search, .cat-search, .admin-panel input { width: 100%; box-sizing: border-box; }
+}
 </style>
 </head>
 
@@ -62,9 +138,17 @@ header h1{margin-top:15px;text-shadow:0 0 20px var(--p)}
 <div class="stats">
   <div class="stat">إجمالي الستريمرز<span id="t">0</span></div>
   <div class="stat">مشاهد الآن<span id="v">0</span></div>
+  <div class="stat">نشط الآن<span id="liveCount">0</span></div>
 </div>
 
 <div class="filters">
+  <div class="custom-select">
+    <div class="select-selected"><span id="selectedText">الكل</span> ▼</div>
+    <div class="select-items select-hide">
+      <input class="cat-search" placeholder="بحث بالفئات">
+      <div id="catOptions"></div>
+    </div>
+  </div>
   <input id="search" placeholder="بحث...">
 </div>
 
@@ -73,13 +157,18 @@ header h1{margin-top:15px;text-shadow:0 0 20px var(--p)}
 <div class="admin-panel" id="adminPanel">
   <input id="alink" placeholder="رابط Kick">
   <input id="acat" placeholder="الفئة">
-  <button onclick="addStreamer()">إضافة</button>
+  <button onclick="addStreamer()">إضافة ستريمر</button>
+  <input id="adel" placeholder="اسم القناة للحذف">
+  <button onclick="removeStreamer()">حذف ستريمر</button>
+  <button onclick="toggleAdmin()">إغلاق</button>
 </div>
 
+<div id="toast"></div>
+
 <div id="passwordPanel">
-  <h3>كلمة المرور</h3>
-  <input id="passwordInput" type="password">
-  <button onclick="login()">دخول</button>
+  <h3 style="color:#fff;margin-bottom:15px;">أدخل كلمة المرور للوحة الإدارة</h3>
+  <input id="passwordInput" type="password" placeholder="كلمة المرور">
+  <button id="passwordBtn">دخول</button>
 </div>
 
 <!-- Firebase -->
@@ -94,7 +183,8 @@ const firebaseConfig = {
   projectId: "kick-f3a1f",
   storageBucket: "kick-f3a1f.firebasestorage.app",
   messagingSenderId: "977287084252",
-  appId: "1:977287084252:web:7b2f9154f46a2963fa9c19"
+  appId: "1:977287084252:web:7b2f9154f46a2963fa9c19",
+  measurementId: "G-FNYG8F7D03"
 };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
@@ -103,51 +193,183 @@ const db = firebase.database();
 <script>
 const API="https://kick-proxy-live.jz2svbrh8f.workers.dev";
 let streamers=[];
-const adminPassword="3911";
+let selectedCategories=[];
+const adminPasswordHash = "3911";
 
-function login(){
-  if(passwordInput.value===adminPassword){
-    adminPanel.style.display="block";
-    passwordPanel.style.display="none";
+const grid=document.getElementById("grid");
+const t=document.getElementById("t");
+const v=document.getElementById("v");
+const liveCount=document.getElementById("liveCount");
+const search=document.getElementById("search");
+const adminPanel=document.getElementById("adminPanel");
+const passwordPanel=document.getElementById("passwordPanel");
+const passwordInput=document.getElementById("passwordInput");
+const passwordBtn=document.getElementById("passwordBtn");
+
+function toast(msg){const t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2500);}
+function updateStats(){t.textContent=streamers.length}
+
+document.querySelector(".select-selected").onclick=()=>{document.querySelector(".select-items").classList.toggle("select-hide");}
+
+// حماية لوحة الإدارة
+passwordBtn.onclick = ()=>{
+  if(passwordInput.value === adminPasswordHash){
+    adminPanel.style.display = "block";
+    passwordPanel.style.display = "none";
+    passwordInput.value = "";
+  } else {
+    toast("كلمة المرور غير صحيحة");
   }
+};
+
+function toggleAdmin(){
+  adminPanel.style.display = adminPanel.style.display==="block"?"none":"block";
 }
 
+// تحميل الستريمرز من Firebase
 function loadStreamers(){
-  db.ref("streamers").on("value",s=>{
-    streamers=s.val()||[];
-    render();
+  db.ref('streamers').on('value', snapshot => {
+    streamers = snapshot.val() || [];
+    updateCategories();
+    renderOnce();
+    updateViewers();
   });
 }
 
-function save(){db.ref("streamers").set(streamers)}
+// حفظ الستريمرز في Firebase
+function saveStreamers(){
+  db.ref('streamers').set(streamers);
+}
 
-function render(){
+// تحديث الفئات
+function updateCategories(){
+  const box=document.getElementById("catOptions");
+  box.innerHTML="";
+  const all=document.createElement("div");
+  all.className="cat-option";
+  all.innerHTML=`<input type="checkbox" value="ALL" checked> الكل`;
+  box.appendChild(all);
+  all.querySelector("input").onchange=()=>{
+    if(all.querySelector("input").checked){
+      selectedCategories=[];
+      [...box.querySelectorAll("input")].forEach(inp=>{
+        if(inp!==all.querySelector("input")) inp.checked=false;
+      });
+      document.getElementById("selectedText").textContent="الكل";
+      renderOnce();
+    }
+  };
+
+  [...new Set(streamers.map(s=>s.category))].forEach(c=>{
+    const d=document.createElement("div");
+    d.className="cat-option";
+    d.innerHTML=`<input type="checkbox" value="${encodeURIComponent(c)}"> ${c}`;
+    d.querySelector("input").onchange=()=>{
+      const checkedCats = [...box.querySelectorAll("input:checked")].map(i=>decodeURIComponent(i.value)).filter(v=>v!=="ALL");
+      selectedCategories = checkedCats;
+      document.getElementById("selectedText").textContent = selectedCategories.length ? selectedCategories.join(", ") : "الكل";
+      all.querySelector("input").checked = selectedCategories.length === 0;
+      renderOnce();
+    };
+    box.appendChild(d);
+  });
+
+  document.querySelector(".cat-search").oninput=e=>{
+    [...box.children].forEach(div=>{
+      div.style.display=div.textContent.toLowerCase().includes(e.target.value.toLowerCase())?"flex":"none";
+    });
+  };
+}
+
+function renderOnce(){
   grid.innerHTML="";
-  streamers.forEach(s=>{
-    grid.innerHTML+=`
-    <div class="card">
-      <div class="avatar"></div>
-      <b>${s.name}</b>
+  let data=[...streamers];
+  if(selectedCategories.length) data=data.filter(s=>selectedCategories.includes(s.category));
+  if(search.value) data=data.filter(s=>s.name.toLowerCase().includes(search.value.toLowerCase()));
+  data.sort((a,b)=>(b.viewers||0)-(a.viewers||0));
+
+  let total=0,live=0;
+  data.forEach(s=>{
+    total+=s.viewers||0;
+    if(s.viewers>0) live++;
+    const card=document.createElement("div");
+    card.className="card";
+    card.dataset.name=s.name;
+    card.innerHTML=`
+      ${s.avatar?`<img class="avatar" src="${s.avatar}">`:`<div class="avatar"></div>`}
+      <strong>${s.name}</strong>
       <div class="category">${s.category}</div>
-      <a class="btn" href="${s.link}" target="_blank">القناة</a>
-    </div>`;
+      <div class="info">المشاهدين الآن: <span class="viewers">${s.viewers||0}</span></div>
+      <div class="live-status">
+        <div class="dot ${s.viewers>0?'live':'off'}"></div>
+        <span>${s.viewers>0?'نشط الآن':'غير متصل'}</span>
+      </div>
+      <a class="btn" href="${s.link}" target="_blank">دخول القناة</a>
+    `;
+    grid.appendChild(card);
   });
-  t.textContent=streamers.length;
+  v.textContent=total;
+  liveCount.textContent=live;
+  updateStats();
 }
 
+async function updateViewers(){
+  let total=0,live=0;
+  const batchSize = 50; 
+  for(let i=0;i<streamers.length;i+=batchSize){
+    const batch = streamers.slice(i,i+batchSize);
+    await Promise.all(batch.map(async s=>{
+      try{
+        const user=s.link.split("/").pop();
+        const r=await fetch(`${API}?user=${user}`);
+        const d=await r.json();
+        if(!d) return;
+        s.viewers=d.viewers||0;
+        if(d.avatar) s.avatar=d.avatar;
+        total+=s.viewers;
+        if(s.viewers>0) live++;
+      }catch(e){console.warn("Error updating viewers:", e);}
+    }));
+  }
+  renderOnce();
+  saveStreamers();
+}
+
+// Admin functions
 function addStreamer(){
-  const link=alink.value.trim();
-  const cat=acat.value.trim();
-  if(!link||!cat)return;
+  const link=document.getElementById("alink").value.trim();
+  const cat=document.getElementById("acat").value.trim();
+  if(!link||!cat){toast("الرجاء إدخال الرابط والفئة"); return;}
   const name=link.split("/").pop();
-  streamers.push({name,link,category:cat});
-  save();
-  alink.value=acat.value="";
+  if(streamers.some(s=>s.name.toLowerCase()===name.toLowerCase())){toast("الستريمر موجود مسبقًا"); return;}
+  streamers.push({name,link,category:cat,avatar:'',viewers:0});
+  saveStreamers(); updateCategories(); updateViewers();
+  document.getElementById("alink").value=""; document.getElementById("acat").value="";
+  toast("تمت الإضافة بنجاح");
 }
 
-search.oninput=()=>{ if(search.value==="/rt"){passwordPanel.style.display="block";search.value=""}}
+function removeStreamer(){
+  const adel=document.getElementById("adel").value.trim();
+  if(!adel){toast("ادخل اسم القناة للحذف"); return;}
+  if(!confirm("هل أنت متأكد من الحذف؟")) return;
+  streamers=streamers.filter(s=>s.name.toLowerCase()!==adel.toLowerCase());
+  saveStreamers(); updateCategories(); updateViewers();
+  document.getElementById("adel").value="";
+  toast("تم الحذف بنجاح");
+}
 
+// البحث + فتح لوحة الإدارة عند /rt
+search.oninput=()=>{
+  if(search.value === "/rt"){
+    passwordPanel.style.display = "block";
+    search.value="";
+  }
+  renderOnce();
+};
+
+// Init
 loadStreamers();
+setInterval(updateViewers,15000);
 </script>
 
 </body>
