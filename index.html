@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ستريمرز ريسبكت</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --p:#9d4edd; --g:#2cff7b;
+  --bg1:#1a0025; --bg2:#2e004f;
+}
+*{box-sizing:border-box;margin:0;padding:0;font-family:Roboto}
+body{background:radial-gradient(circle at top,var(--bg2),#09000f);color:#fff}
+
+header{text-align:center;padding:30px;background:rgba(0,0,0,.4)}
+header img{width:100px;border-radius:50%;animation:float 3s infinite}
+header h1{margin-top:15px;text-shadow:0 0 20px var(--p)}
+
+.stats{display:flex;justify-content:center;gap:15px;flex-wrap:wrap;margin:25px 0}
+.stat{background:linear-gradient(145deg,var(--bg1),var(--bg2));padding:20px 25px;border-radius:25px;min-width:170px;text-align:center}
+.stat span{font-size:1.7em;color:var(--g);display:block}
+
+.filters{display:flex;justify-content:center;gap:15px;flex-wrap:wrap;margin-bottom:25px}
+#search{padding:12px 18px;border-radius:18px;border:2px solid var(--p);background:var(--bg1);color:#fff}
+
+.custom-select{position:relative;width:260px}
+.select-selected{background:var(--bg1);border:2px solid var(--p);padding:12px 18px;border-radius:18px;cursor:pointer;display:flex;justify-content:space-between}
+.select-items{position:absolute;top:100%;left:0;right:0;background:var(--bg1);border:2px solid var(--p);border-radius:15px;max-height:260px;overflow:auto;z-index:99}
+.select-hide{display:none}
+.cat-search{width:90%;margin:10px auto;padding:8px;border-radius:10px;border:none;background:#111;color:#fff}
+.cat-option{padding:8px 15px;display:flex;gap:8px}
+.cat-option:hover{background:rgba(255,255,255,.1)}
+
+.streamers{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:25px;padding:0 25px 60px}
+.card{background:linear-gradient(160deg,var(--bg1),var(--bg2));border-radius:25px;padding:20px;text-align:center}
+
+.avatar{width:85px;height:85px;border-radius:50%;border:3px solid var(--p);margin:0 auto 10px}
+.category{padding:6px 14px;border-radius:12px;background:linear-gradient(135deg,#9d4edd,#2cff7b);font-weight:bold;display:inline-block}
+
+.btn{display:inline-block;margin-top:15px;padding:12px 25px;border-radius:50px;background:linear-gradient(135deg,var(--p),var(--g));color:#fff;text-decoration:none}
+
+.admin-panel{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#000;padding:20px;border-radius:15px;width:350px;display:none;z-index:999}
+.admin-panel input,.admin-panel button{width:100%;padding:10px;margin-bottom:10px;border-radius:10px;border:none}
+.admin-panel button{background:var(--p);color:#fff}
+
+#passwordPanel{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#000;padding:20px;border-radius:15px;width:300px;z-index:1000;text-align:center}
+#passwordPanel input,#passwordPanel button{width:100%;padding:10px;margin-bottom:10px;border-radius:10px;border:none}
+
+@keyframes float{50%{transform:translateY(-10px)}}
+</style>
+</head>
+
+<body>
+
+<header>
+  <img src="https://i.ibb.co/HpDrDgLc/IMG-2585.jpg">
+  <h1>ستريمرز ريسبكت</h1>
+</header>
+
+<div class="stats">
+  <div class="stat">إجمالي الستريمرز<span id="t">0</span></div>
+  <div class="stat">مشاهد الآن<span id="v">0</span></div>
+</div>
+
+<div class="filters">
+  <input id="search" placeholder="بحث...">
+</div>
+
+<section class="streamers" id="grid"></section>
+
+<div class="admin-panel" id="adminPanel">
+  <input id="alink" placeholder="رابط Kick">
+  <input id="acat" placeholder="الفئة">
+  <button onclick="addStreamer()">إضافة</button>
+</div>
+
+<div id="passwordPanel">
+  <h3>كلمة المرور</h3>
+  <input id="passwordInput" type="password">
+  <button onclick="login()">دخول</button>
+</div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyDOmzpXVPdRTE-L0sMK5Q8KJgLvKV-GuxU",
+  authDomain: "kick-f3a1f.firebaseapp.com",
+  databaseURL: "https://kick-f3a1f-default-rtdb.firebaseio.com",
+  projectId: "kick-f3a1f",
+  storageBucket: "kick-f3a1f.firebasestorage.app",
+  messagingSenderId: "977287084252",
+  appId: "1:977287084252:web:7b2f9154f46a2963fa9c19"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+</script>
+
+<script>
+const API="https://kick-proxy-live.jz2svbrh8f.workers.dev";
+let streamers=[];
+const adminPassword="3911";
+
+function login(){
+  if(passwordInput.value===adminPassword){
+    adminPanel.style.display="block";
+    passwordPanel.style.display="none";
+  }
+}
+
+function loadStreamers(){
+  db.ref("streamers").on("value",s=>{
+    streamers=s.val()||[];
+    render();
+  });
+}
+
+function save(){db.ref("streamers").set(streamers)}
+
+function render(){
+  grid.innerHTML="";
+  streamers.forEach(s=>{
+    grid.innerHTML+=`
+    <div class="card">
+      <div class="avatar"></div>
+      <b>${s.name}</b>
+      <div class="category">${s.category}</div>
+      <a class="btn" href="${s.link}" target="_blank">القناة</a>
+    </div>`;
+  });
+  t.textContent=streamers.length;
+}
+
+function addStreamer(){
+  const link=alink.value.trim();
+  const cat=acat.value.trim();
+  if(!link||!cat)return;
+  const name=link.split("/").pop();
+  streamers.push({name,link,category:cat});
+  save();
+  alink.value=acat.value="";
+}
+
+search.oninput=()=>{ if(search.value==="/rt"){passwordPanel.style.display="block";search.value=""}}
+
+loadStreamers();
+</script>
+
+</body>
+</html>
