@@ -13,14 +13,15 @@
 *{box-sizing:border-box;margin:0;padding:0;font-family:Roboto}
 body{background:radial-gradient(circle at top,var(--bg2),#09000f);color:#fff}
 header{text-align:center;padding:30px;background:rgba(0,0,0,.4)}
-header img{width:100px;border-radius:50%;animation:float 3s infinite}
+header img{width:100px;border-radius:50%;animation:float 3s infinite; box-shadow:0 0 15px rgba(157, 78, 221,0.5);}
 header h1{margin-top:15px;text-shadow:0 0 20px var(--p)}
 .stats{display:flex;justify-content:center;gap:15px;flex-wrap:wrap;margin:25px 0}
-.stat{background:linear-gradient(145deg,var(--bg1),var(--bg2));padding:20px 25px;border-radius:25px;min-width:170px;text-align:center}
-.stat span{font-size:1.7em;color:var(--g);display:block}
+.stat{background:linear-gradient(145deg,var(--bg1),var(--bg2));padding:20px 25px;border-radius:25px;min-width:170px;text-align:center;transition: transform 0.3s;}
+.stat:hover { transform: translateY(-3px) scale(1.03);}
+.stat span{font-size:1.7em;color:var(--g);display:block;transition:all 0.3s;}
 .filters{display:flex;justify-content:center;gap:15px;flex-wrap:wrap;margin-bottom:25px}
 #search{padding:12px 18px;border-radius:18px;border:2px solid var(--p);background:var(--bg1);color:#fff}
-.custom-select{position:relative;width:260px}
+.custom-select{position:relative;width:200px}
 .select-selected{background:var(--bg1);border:2px solid var(--p);padding:12px 18px;border-radius:18px;cursor:pointer;display:flex;justify-content:space-between}
 .select-items{position:absolute;top:100%;left:0;right:0;background:var(--bg1);border:2px solid var(--p);border-radius:15px;max-height:260px;overflow:auto;z-index:99}
 .select-hide{display:none}
@@ -28,14 +29,17 @@ header h1{margin-top:15px;text-shadow:0 0 20px var(--p)}
 .cat-option{padding:8px 15px;display:flex;gap:8px}
 .cat-option:hover{background:rgba(255,255,255,.1)}
 .streamers{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:25px;padding:0 25px 60px}
-.card{background:linear-gradient(160deg,var(--bg1),var(--bg2));border-radius:25px;padding:20px;text-align:center;transition: transform 0.3s;position:relative}
-.avatar{width:85px;height:85px;border-radius:50%;border:3px solid var(--p);background:rgba(255,255,255,.08);margin:0 auto 10px;}
+.card{background:linear-gradient(160deg,var(--bg1),var(--bg2));border-radius:25px;padding:20px;text-align:center;transition: transform 0.3s, box-shadow 0.3s;position:relative}
+.card:hover { transform: translateY(-5px) scale(1.02); box-shadow: 0 8px 20px rgba(0,0,0,0.4);}
+.avatar{width:85px;height:85px;border-radius:50%;border:3px solid var(--p);background:rgba(255,255,255,.08);margin:0 auto 10px; box-shadow:0 0 15px rgba(157, 78, 221,0.5);}
 .category{display:inline-block;padding:6px 14px;border-radius:12px;background:linear-gradient(135deg,#9d4edd,#2cff7b);font-weight:bold;margin-top:8px;}
 .info{margin-top:10px;color:#ccc}
 .live-status{display:flex;justify-content:center;gap:8px;align-items:center;margin-top:10px}
 .dot{width:14px;height:14px;border-radius:50%;}
 .dot.live{background:#2cff7b;box-shadow:0 0 10px #2cff7b;animation: pulse 1.5s infinite;}
 .dot.off{background:#ff4b4b;box-shadow:0 0 10px #ff4b4b;animation: pulse 1.5s infinite;}
+.favorite { position:absolute; top:12px; right:12px; font-size:1.4em; color:gold; cursor:pointer; transition: transform 0.2s; }
+.favorite:hover { transform: scale(1.2); }
 @keyframes pulse{0%{transform: scale(1); box-shadow:0 0 10px currentColor;}50%{transform: scale(1.4);box-shadow:0 0 20px currentColor;}100%{transform: scale(1);box-shadow:0 0 10px currentColor;}}
 .btn{display:inline-block;margin-top:15px;padding:12px 25px;border-radius:50px;background:linear-gradient(135deg,var(--p),var(--g));color:#fff;text-decoration:none}
 .admin-panel{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#000;padding:20px;border-radius:15px;width:350px;display:none;z-index:999;}
@@ -47,8 +51,35 @@ header h1{margin-top:15px;text-shadow:0 0 20px var(--p)}
 #passwordPanel input{width:100%;padding:10px;margin-bottom:10px;border-radius:10px;border:none;font-weight:bold;}
 #passwordPanel button{width:100%;padding:10px;border-radius:10px;border:none;background:var(--p);color:#fff;font-weight:bold;cursor:pointer;}
 @keyframes float{50%{transform:translateY(-10px)}}
+
+/* أزرار الفرز الجديدة */
+.sort-buttons {
+  display:flex;
+  justify-content:center;
+  gap:15px;
+  margin-bottom:25px;
+  flex-wrap:wrap;
+}
+.sort-btn {
+  padding:10px 25px;
+  border-radius:25px;
+  border:none;
+  background:linear-gradient(135deg,var(--bg1),var(--bg2));
+  color:#fff;
+  font-weight:bold;
+  cursor:pointer;
+  transition: transform 0.2s, background 0.3s;
+}
+.sort-btn:hover {
+  transform: scale(1.05);
+  background:linear-gradient(135deg,var(--p),var(--g));
+}
+.sort-btn.active {
+  background:linear-gradient(135deg,var(--p),var(--g));
+}
+
 @media (max-width: 600px){header img { width: 70px; } header h1 { font-size: 1.5em; } .stat { padding: 15px 20px; min-width: 140px; } .btn { padding: 10px 20px; font-size: 0.9em; } .custom-select { width: 90%; }}
-@media (max-width: 400px){.streamers { padding: 0 10px 50px; gap: 15px; } .card { padding: 15px; } .avatar { width: 70px; height: 70px; }}
+@media (max-width: 400px){.streamers { padding:0 10px 50px; gap:15px; } .card { padding:15px; } .avatar { width:70px; height:70px; }}
 @media (max-width: 500px){.admin-panel, #passwordPanel { width: 90%; } #search, .cat-search, .admin-panel input { width: 100%; box-sizing: border-box; }}
 </style>
 </head>
@@ -74,6 +105,11 @@ header h1{margin-top:15px;text-shadow:0 0 20px var(--p)}
     </div>
   </div>
   <input id="search" placeholder="بحث...">
+  <!-- أزرار الفرز الجديدة -->
+  <div class="sort-buttons">
+    <button class="sort-btn active" data-sort="favorites">المفضلة</button>
+    <button class="sort-btn" data-sort="name">فرز حسب الاسم</button>
+  </div>
 </div>
 
 <section class="streamers" id="grid"></section>
@@ -81,10 +117,11 @@ header h1{margin-top:15px;text-shadow:0 0 20px var(--p)}
 <div class="admin-panel" id="adminPanel">
   <input id="alink" placeholder="رابط Kick">
   <input id="acat" placeholder="الفئة">
-  <button onclick="addStreamer()">إضافة ستريمر</button>
-  <input id="adel" placeholder="اسم القناة للحذف">
-  <button onclick="removeStreamer()">حذف ستريمر</button>
-  <button onclick="toggleAdmin()">إغلاق</button>
+  <button id="addBtn">إضافة ستريمر</button>
+  <input id="adel" placeholder="اسم القناة للتعديل/الحذف">
+  <button id="updateBtn">تعديل ستريمر</button>
+  <button id="removeBtn">حذف ستريمر</button>
+  <button id="closeAdmin">إغلاق</button>
 </div>
 
 <div id="toast"></div>
@@ -97,7 +134,6 @@ header h1{margin-top:15px;text-shadow:0 0 20px var(--p)}
 
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
-
 <script>
 const firebaseConfig = {
   apiKey: "AIzaSyDOmzpXVPdRTE-L0sMK5Q8KJgLvKV-GuxU",
@@ -113,11 +149,7 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 const API="https://kick-proxy-live.jz2svbrh8f.workers.dev";
 
-let streamers=[];
-let streamersMap = {};
-let selectedCategories=[];
-const adminPasswordHash = "3911";
-
+let streamers=[], streamersMap = {}, selectedCategories=[];
 const grid=document.getElementById("grid");
 const t=document.getElementById("t");
 const v=document.getElementById("v");
@@ -127,12 +159,37 @@ const adminPanel=document.getElementById("adminPanel");
 const passwordPanel=document.getElementById("passwordPanel");
 const passwordInput=document.getElementById("passwordInput");
 const passwordBtn=document.getElementById("passwordBtn");
+const addBtn=document.getElementById("addBtn");
+const removeBtn=document.getElementById("removeBtn");
+const updateBtn=document.getElementById("updateBtn");
+const closeAdmin=document.getElementById("closeAdmin");
 
+const adminPasswordHash = "3911"; 
+let favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
+function saveFavorites(){ localStorage.setItem("favorites", JSON.stringify(favorites)); }
 function toast(msg){const t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2500);}
-function updateStats(){t.textContent=streamers.length}
-document.querySelector(".select-selected").onclick=()=>{document.querySelector(".select-items").classList.toggle("select-hide");}
+function animateValue(el, start, end, duration){
+  const startTime = performance.now();
+  function animate(currentTime){
+    const elapsed = currentTime - startTime;
+    if(elapsed < duration){
+      const progress = elapsed/duration;
+      el.textContent = Math.floor(start + (end - start)*progress);
+      requestAnimationFrame(animate);
+    } else { el.textContent = end; }
+  }
+  requestAnimationFrame(animate);
+}
+function updateStats(){
+  const total = streamers.length;
+  const totalViewers = streamers.reduce((acc,s)=>acc+(s.viewers||0),0);
+  const liveNow = streamers.filter(s=>s.viewers>0).length;
+  animateValue(t, parseInt(t.textContent)||0, total, 800);
+  animateValue(v, parseInt(v.textContent)||0, totalViewers, 800);
+  animateValue(liveCount, parseInt(liveCount.textContent)||0, liveNow, 800);
+}
 
-// حماية لوحة الإدارة
+document.querySelector(".select-selected").onclick=()=>{document.querySelector(".select-items").classList.toggle("select-hide");}
 passwordBtn.onclick = ()=>{
   if(passwordInput.value === adminPasswordHash){
     adminPanel.style.display = "block";
@@ -140,80 +197,91 @@ passwordBtn.onclick = ()=>{
     passwordInput.value = "";
   } else { toast("كلمة المرور غير صحيحة"); }
 };
-function toggleAdmin(){adminPanel.style.display = adminPanel.style.display==="block"?"none":"block";}
+closeAdmin.onclick = ()=>{adminPanel.style.display="none";}
 
-// تحميل الستريمرز تلقائياً
+// تحميل البيانات من Firebase
 db.ref('streamers').on('child_added', snapshot => {
-  const s = snapshot.val();
-  s.key = snapshot.key;
+  const s = snapshot.val(); s.key = snapshot.key;
   streamers.push(s);
   streamersMap[s.name.toLowerCase().trim()] = s.key;
-  updateCategories();
-  renderOnce();
-  updateViewers();
+  updateCategories(); renderStreamers(); updateViewers();
 });
 db.ref('streamers').on('child_removed', snapshot => {
   const key = snapshot.key;
   streamers = streamers.filter(s => s.key !== key);
   for (const name in streamersMap) { if(streamersMap[name] === key) delete streamersMap[name]; }
-  updateCategories();
-  renderOnce();
+  updateCategories(); renderStreamers();
 });
 
-// تحديث الفئات
 function updateCategories(){
-  const box=document.getElementById("catOptions");
-  box.innerHTML="";
-  const all=document.createElement("div");
-  all.className="cat-option";
-  all.innerHTML=`<input type="checkbox" value="ALL" checked> الكل`;
-  box.appendChild(all);
+  const box=document.getElementById("catOptions"); box.innerHTML="";
+  const all=document.createElement("div"); all.className="cat-option";
+  all.innerHTML=`<input type="checkbox" value="ALL" checked> الكل`; box.appendChild(all);
   all.querySelector("input").onchange=()=>{
     if(all.querySelector("input").checked){
       selectedCategories=[];
-      [...box.querySelectorAll("input")].forEach(inp=>{
-        if(inp!==all.querySelector("input")) inp.checked=false;
-      });
+      [...box.querySelectorAll("input")].forEach(inp=>{if(inp!==all.querySelector("input")) inp.checked=false;});
       document.getElementById("selectedText").textContent="الكل";
-      renderOnce();
+      renderStreamers();
     }
   };
   [...new Set(streamers.map(s=>s.category))].forEach(c=>{
-    const d=document.createElement("div");
-    d.className="cat-option";
+    const d=document.createElement("div"); d.className="cat-option";
     d.innerHTML=`<input type="checkbox" value="${encodeURIComponent(c)}"> ${c}`;
     d.querySelector("input").onchange=()=>{
       const checkedCats = [...box.querySelectorAll("input:checked")].map(i=>decodeURIComponent(i.value)).filter(v=>v!=="ALL");
       selectedCategories = checkedCats;
       document.getElementById("selectedText").textContent = selectedCategories.length ? selectedCategories.join(", ") : "الكل";
       all.querySelector("input").checked = selectedCategories.length === 0;
-      renderOnce();
+      renderStreamers();
     };
     box.appendChild(d);
   });
   document.querySelector(".cat-search").oninput=e=>{
-    [...box.children].forEach(div=>{
-      div.style.display=div.textContent.toLowerCase().includes(e.target.value.toLowerCase())?"flex":"none";
-    });
+    [...box.children].forEach(div=>{div.style.display=div.textContent.toLowerCase().includes(e.target.value.toLowerCase())?"flex":"none";});
   };
 }
 
-// عرض الستريمرز
-function renderOnce(){
+// أزرار الفرز
+document.querySelectorAll(".sort-btn").forEach(btn=>{
+  btn.onclick=()=>{
+    document.querySelectorAll(".sort-btn").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    renderStreamers();
+  };
+});
+
+function getSortValue(){
+  const activeBtn = document.querySelector(".sort-btn.active");
+  return activeBtn ? activeBtn.dataset.sort : "favorites";
+}
+
+function renderStreamers(){
   grid.innerHTML="";
   let data=[...streamers];
   if(selectedCategories.length) data=data.filter(s=>selectedCategories.includes(s.category));
   if(search.value) data=data.filter(s=>s.name.toLowerCase().includes(search.value.toLowerCase()));
-  data.sort((a,b)=>(b.viewers||0)-(a.viewers||0));
+  if(data.length===0){grid.innerHTML='<p style="text-align:center;width:100%;">لا توجد نتائج</p>'; updateStats(); return;}
 
-  let total=0,live=0;
+  data.sort((a,b)=>{
+    const aFav = favorites.includes(a.name)?1:0;
+    const bFav = favorites.includes(b.name)?1:0;
+
+    if(getSortValue() === "favorites"){
+      if(aFav!==bFav) return bFav-aFav;
+      return (b.viewers||0)-(a.viewers||0);
+    }
+
+    if(getSortValue()==="name") return a.name.localeCompare(b.name);
+    if(getSortValue()==="viewers") return (b.viewers||0)-(a.viewers||0);
+    return 0;
+  });
+
   data.forEach(s=>{
-    total+=s.viewers||0;
-    if(s.viewers>0) live++;
-    const card=document.createElement("div");
-    card.className="card";
-    card.dataset.name=s.name;
+    const card=document.createElement("div"); card.className="card"; card.dataset.name=s.name;
+    const isFav = favorites.includes(s.name);
     card.innerHTML=`
+      <div class="favorite">${isFav?"★":"☆"}</div>
       ${s.avatar?`<img class="avatar" src="${s.avatar}">`:`<div class="avatar"></div>`}
       <strong>${s.name}</strong>
       <div class="category">${s.category}</div>
@@ -224,14 +292,16 @@ function renderOnce(){
       </div>
       <a class="btn" href="${s.link}" target="_blank">دخول القناة</a>
     `;
+    card.querySelector(".favorite").onclick = ()=>{
+      if(favorites.includes(s.name)){ favorites=favorites.filter(f=>f!==s.name); }
+      else{ favorites.push(s.name); }
+      saveFavorites(); renderStreamers();
+    };
     grid.appendChild(card);
   });
-  v.textContent=total;
-  liveCount.textContent=live;
   updateStats();
 }
 
-// تحديث المشاهدين
 async function updateViewers(){
   const batchSize = 50;
   for(let i=0;i<streamers.length;i+=batchSize){
@@ -247,42 +317,61 @@ async function updateViewers(){
       }catch(e){console.warn("Error updating viewers:", e);}
     }));
   }
-  renderOnce();
+  renderStreamers();
 }
 
-// إضافة ستريمر
-function addStreamer(){
+// إضافة، تعديل، حذف
+addBtn.onclick = ()=>{
   const link=document.getElementById("alink").value.trim();
   const cat=document.getElementById("acat").value.trim();
   if(!link||!cat){toast("الرجاء إدخال الرابط والفئة"); return;}
-  const name=link.split("/").pop();
-
-  db.ref('streamers').push({name, link, category: cat, avatar:'', viewers:0})
-    .then(()=>{toast("تمت الإضافة بنجاح"); document.getElementById("alink").value=""; document.getElementById("acat").value="";})
+  const name = link.split("/").pop().toLowerCase();
+  const newStreamer = {name, link, category: cat, avatar:'', viewers:0};
+  db.ref('streamers').push(newStreamer)
+    .then(ref=>{
+      newStreamer.key = ref.key;
+      streamers.push(newStreamer);
+      streamersMap[name] = ref.key;
+      updateCategories(); renderStreamers(); updateViewers(); toast("تمت الإضافة بنجاح");
+      document.getElementById("alink").value=""; document.getElementById("acat").value="";
+    })
     .catch(err=>{console.error(err); toast("حدث خطأ أثناء الإضافة");});
 }
 
-// حذف ستريمر محسّن
-function removeStreamer() {
+updateBtn.onclick = ()=>{
+  const adel=document.getElementById("adel").value.trim().toLowerCase();
+  const newCat=document.getElementById("acat").value.trim();
+  if(!adel||!newCat){toast("ادخل اسم القناة والفئة الجديدة"); return;}
+  const key = streamersMap[adel];
+  if(!key){toast("الستريمر غير موجود"); return;}
+  db.ref(`streamers/${key}`).update({category:newCat})
+    .then(()=>{toast("تم التعديل بنجاح"); updateCategories(); renderStreamers();})
+    .catch(err=>{console.error(err); toast("حدث خطأ أثناء التعديل");});
+}
+
+removeBtn.onclick = ()=>{
   const adel=document.getElementById("adel").value.trim().toLowerCase();
   if(!adel){toast("ادخل اسم القناة للحذف"); return;}
   if(!confirm("هل أنت متأكد من الحذف؟")) return;
-
   const key = streamersMap[adel];
   if(!key){toast("الستريمر غير موجود"); return;}
-
   db.ref(`streamers/${key}`).remove()
-    .then(()=>{ toast("تم الحذف بنجاح"); document.getElementById("adel").value=""; })
-    .catch(err=>{ console.error(err); toast("حدث خطأ أثناء الحذف"); });
+    .then(()=>{
+      streamers = streamers.filter(s=>s.key !== key);
+      delete streamersMap[adel];
+      updateCategories(); renderStreamers();
+      toast("تم الحذف بنجاح"); document.getElementById("adel").value="";
+    })
+    .catch(err=>{console.error(err); toast("حدث خطأ أثناء الحذف");});
 }
 
-// البحث + فتح لوحة الإدارة عند /rt
 search.oninput=()=>{
   if(search.value === "/rt"){ passwordPanel.style.display = "block"; search.value=""; }
-  renderOnce();
+  renderStreamers();
 };
 
 setInterval(updateViewers,15000);
 </script>
+
 </body>
 </html>
